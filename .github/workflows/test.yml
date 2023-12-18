@@ -15,7 +15,7 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       
-      - run: pip install pytest
+      - run: pip install '.[dev]'
       
       - name: Runtests
         run: ./test.sh
