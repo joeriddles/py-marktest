@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "py-marktest"
+version = "0.0.1"
+authors = [
+    { name="Joseph Riddle", email="joeriddles10@gmail.com"},
+]
+description = "A command line tool for testing Python snippets in markdown."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Testing :: Unit",
+    "Topic :: Text Processing :: Markup :: Markdown",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/joeriddles/py-marktest"
+"Bug Tracker" = "https://github.com/joeriddles/py-marktest/issues"
+
