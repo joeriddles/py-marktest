@@ -5,5 +5,5 @@ then
     PYTHON=python3
 fi
 
-$PYTHON marktest.py README.md $PYTHON && echo "marktest passed"
+PYTHONPATH=$PYTHONPATH:./src $PYTHON -m py-marktest README.md $PYTHON && echo "marktest passed"
 $PYTHON -m pytest --quiet src && echo "pytest passed"

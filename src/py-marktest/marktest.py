@@ -4,8 +4,6 @@ Usage: python -m marktest README.md
 
 Inspired from https://daniel.feldroy.com/posts/my-markdown-code-snippet-tester.
 """
-from sys import argv
-import doctest
 import re
 import subprocess
 
@@ -82,15 +80,3 @@ def main(filename, python_cmd="python"):
     # os.remove(test_filename)
 
     return proc.returncode
-
-
-if __name__ == "__main__":
-    filename = argv[1]
-    python_cmd = argv[2]
-
-    # Test all REPLs
-    # https://docs.python.org/3/library/doctest.html
-    doctest.testfile(filename)
-
-    returncode = main(filename, python_cmd)
-    exit(returncode)

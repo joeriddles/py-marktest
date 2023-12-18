@@ -7,3 +7,6 @@ __pycache__
 .venv
 dist
 *.egg-info
+
+# py-marktest
+_testfile.py*
