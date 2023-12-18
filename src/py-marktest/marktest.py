@@ -11,7 +11,7 @@ open_pattern = re.compile(r"\s*`{3}\s*python")
 close_pattern = re.compile(r"\s*`{3}")
 test_filename = "_testfile.py"
 
-RAISES_ERROR_PATTERN = re.compile(r"\s*raises (\w+Error)")
+RAISES_ERROR_PATTERN = re.compile(r"\s*raises (\w*Error)")
 
 
 def parse_code_line(line: str) -> list[str]:
@@ -24,6 +24,7 @@ def parse_code_line(line: str) -> list[str]:
     has_comment = "#" in line
     if has_comment:
         code, comment = line.split("#")
+        code = code.rstrip()
         comment = comment.strip()
         if match := RAISES_ERROR_PATTERN.match(comment):
             # note: does not handle matching indentation currently and assumes
