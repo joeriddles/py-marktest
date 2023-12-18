@@ -8,5 +8,9 @@ __pycache__
 dist
 *.egg-info
 
+# Python testing
+htmlcov
+.coverage
+
 # py-marktest
 _testfile.py*

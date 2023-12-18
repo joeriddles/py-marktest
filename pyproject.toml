@@ -24,3 +24,9 @@ classifiers = [
 "Homepage" = "https://github.com/joeriddles/py-marktest"
 "Bug Tracker" = "https://github.com/joeriddles/py-marktest/issues"
 
+[tool.coverage.run]
+branch = true
+omit = [
+    "*_test.py",
+    "__main__.py"
+]

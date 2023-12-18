@@ -7,11 +7,11 @@ Inspired from https://daniel.feldroy.com/posts/my-markdown-code-snippet-tester.
 import re
 import subprocess
 
-open_pattern = re.compile(r"\s*`{3}\s*python")
-close_pattern = re.compile(r"\s*`{3}")
-test_filename = "_testfile.py"
+OPEN_PATTERN = re.compile(r"\s*`{3}\s*python")
+CLOSE_PATTERN = re.compile(r"\s*`{3}")
+RAISES_ERROR_PATTERN = re.compile(r"\s*raises (\w*Error|Exception)")
 
-RAISES_ERROR_PATTERN = re.compile(r"\s*raises (\w*Error)")
+TEST_FILENAME = "_testfile.py"
 
 
 def parse_code_line(line: str) -> list[str]:
@@ -47,9 +47,9 @@ def main(filename, python_cmd="python"):
     in_python = False
     with open(filename) as f:
         for line in f.readlines():
-            if re.match(open_pattern, line) is not None:
+            if re.match(OPEN_PATTERN, line) is not None:
                 in_python = True
-            elif in_python and re.match(close_pattern, line):
+            elif in_python and re.match(CLOSE_PATTERN, line):
                 in_python = False
             elif in_python:
                 parsed_code = parse_code_line(line)
@@ -63,11 +63,11 @@ def main(filename, python_cmd="python"):
     # `tempfile.NamedTempFile` fails here because the `write()` doesn't seem to occur
     # until the `with` statement is finished. I would love to be wrong in that, using
     # a tempfile is the cleaner approach. Please let me know a better approach.
-    with open(test_filename, mode="w") as f:
+    with open(TEST_FILENAME, mode="w") as f:
         f.writelines("".join(code))
 
     # Run the code
-    cmd = [python_cmd, test_filename]
+    cmd = [python_cmd, TEST_FILENAME]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
 
