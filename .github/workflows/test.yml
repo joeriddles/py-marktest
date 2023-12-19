@@ -14,11 +14,10 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
-      
-      - run: pip install '.[dev]'
-      
+
       - name: Run tests and test coverage
-        run: make cov
+        run: |
+          make setup cov
 
       - name: Upload code coverage
         uses: actions/upload-artifact@v3
