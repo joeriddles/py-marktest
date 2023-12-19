@@ -17,7 +17,8 @@ jobs:
       
       - run: pip install '.[dev]'
       
-      - run: ./test.sh
+      - name: Run tests and test coverage
+        run: make cov
 
       - name: Upload code coverage
         uses: actions/upload-artifact@v3
