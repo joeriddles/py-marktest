@@ -16,7 +16,7 @@ py-marktest helps you test Python code samples in your markdown files. These cod
 
 ### Local development
 
-Bootstrap your local environment. This will create a new virtual environment in the `./.venv` and install the dev dependencies from `pyproject.toml`.
+Bootstrap your local environment. This will create a new virtual environment in `./.venv` and install the dev dependencies from `pyproject.toml`.
 ```shell
 make setup
 ```
