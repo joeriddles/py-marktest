@@ -12,12 +12,12 @@ jobs:
       
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache: 'pip'
-      
-      - run: pip install '.[dev]'
-      
-      - run: ./test.sh
+
+      - name: Run tests and test coverage
+        run: |
+          make setup cov
 
       - name: Upload code coverage
         uses: actions/upload-artifact@v3
