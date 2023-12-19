@@ -1,12 +1,30 @@
-"""
-Name: marktest.py
-Usage: python -m marktest README.md
-
-Inspired from https://daniel.feldroy.com/posts/my-markdown-code-snippet-tester.
-"""
+"""Inspired from https://daniel.feldroy.com/posts/my-markdown-code-snippet-tester."""
+import dataclasses
+import os
+import pathlib
 import re
 import subprocess
 import typing
+
+ROOT_PATH = pathlib.Path(__name__).parent.parent
+REPL_PATTERN = re.compile(r"^>>>\s+(.*)")
+
+
+@dataclasses.dataclass
+class CodeBlock:
+    lines: list[str]
+    is_repl: bool = False
+
+    def __str__(self) -> str:
+        if self.is_repl:
+            result = os.linesep.join(
+                match.groups()[0]
+                for line in self.lines
+                if (match := REPL_PATTERN.match(line))
+            )
+        else:
+            result = "".join(self.lines)
+        return result
 
 
 class Reader(typing.Protocol):
@@ -33,8 +51,7 @@ class FileWriter(Writer):
 
 
 class Parser(typing.Protocol):
-    def parse(self, lines: list[str]) -> list[str]:
-        """Parse lines of text, returning some other text."""
+    def parse(self, lines: list[str]) -> list[CodeBlock]:
         ...
 
 
@@ -45,18 +62,33 @@ class MarkdownPythonParser(Parser):
     CLOSE_PATTERN = re.compile(r"\s*`{3}")
     RAISES_ERROR_PATTERN = re.compile(r"\s*raises (\w*Error|Exception)")
 
-    def parse(self, lines: list[str]) -> list[str]:
-        in_python = False
-        code: list[str] = []
+    def parse(self, lines: list[str]) -> list[CodeBlock]:
+        """Parse each code block from the lines."""
+        blocks: list[CodeBlock] = []
+
+        cur_block_lines: list[str] = []
+        in_python: bool = False
+        is_repl: bool = False
+
         for line in lines:
-            if re.match(self.OPEN_PATTERN, line) is not None:
+            if re.match(self.OPEN_PATTERN, line):
                 in_python = True
+
             elif in_python and re.match(self.CLOSE_PATTERN, line):
+                code_block = CodeBlock(cur_block_lines, is_repl)
+                blocks.append(code_block)
+
+                # soft reset
+                cur_block_lines = []
                 in_python = False
+                is_repl = False
+
             elif in_python:
+                is_repl = is_repl or REPL_PATTERN.match(line) is not None
                 parsed_code = self._parse_code_line(line)
-                code.extend(parsed_code)
-        return code
+                cur_block_lines.extend(parsed_code)
+
+        return blocks
 
     def _parse_code_line(self, line: str) -> list[str]:
         """Look for comments about raising errors.
@@ -101,26 +133,3 @@ class PythonRunner(Runner):
         output = output.decode("utf-8")
         error = error.decode("utf-8")
         return output, error
-
-
-def main(
-    filename: str,
-    python_entrypoint="python",
-    test_filename="_testfile.py",
-):
-    reader: Reader = FileReader()
-    lines = reader.read(filename)
-
-    parser: Parser = MarkdownPythonParser()
-    code = parser.parse(lines)
-
-    writer: Writer = FileWriter()
-    writer.write(test_filename, code)
-
-    runner: Runner = PythonRunner(python_entrypoint)
-    _, stderr = runner.run([test_filename])
-
-    if stderr:
-        print(stderr)
-        return 1
-    return 0

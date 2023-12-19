@@ -2,6 +2,7 @@
 
 test:
 	. .venv/bin/activate; python -m pytest \
+		-vv \
 		--cov-config=pyproject.toml \
 		--cov=src \
 		--cov-fail-under=80 \
